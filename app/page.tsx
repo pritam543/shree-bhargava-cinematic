@@ -30,7 +30,11 @@ async function getProjects(): Promise<Project[]> {
 
 export default async function Home() {
   const projects = await getProjects();
-  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919876543210';
+  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || '';
+  const getWaLink = (msg?: string) =>
+    wa
+      ? `https://wa.me/${wa}${msg ? `?text=${encodeURIComponent(msg)}` : ''}`
+      : 'mailto:hello@shreebhargava.com?subject=Project%20Enquiry';
 
   return (
     <CinematicMotion>
@@ -1355,7 +1359,7 @@ export default async function Home() {
               <div className="amber-bar mx-auto mt-5" />
               <p className="text-sm text-[#64748b] mt-6 max-w-lg mx-auto leading-7">
                 Have a residence, commercial complex, interior transformation, or turnkey infrastructure project in mind?
-                Select a project track below to start directly with our Indore architects.
+                Select a project track below to connect directly with our Indore architects.
               </p>
             </div>
 
@@ -1384,9 +1388,9 @@ export default async function Home() {
                 return (
                   <a
                     key={card.title}
-                    href={`https://wa.me/${wa}?text=${encodeURIComponent(card.msg)}`}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={getWaLink(card.msg)}
+                    target={wa ? '_blank' : undefined}
+                    rel={wa ? 'noreferrer' : undefined}
                     className="stagger-item group bg-[#f8fafc] border border-slate-200 p-8 hover:bg-[#121822] hover:text-white hover:border-[#ffa500] hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl"
                   >
                     <div className="flex items-center justify-between">
@@ -1401,7 +1405,7 @@ export default async function Home() {
                     <h3 className="serif text-2xl mt-6">{card.title}</h3>
                     <p className="eyebrow mt-2">{card.sub}</p>
                     <p className="text-xs text-[#64748b] group-hover:text-white/80 mt-4">
-                      Tap to send instant project brief on WhatsApp →
+                      Tap to send instant project brief to our studio →
                     </p>
                   </a>
                 );
@@ -1409,19 +1413,19 @@ export default async function Home() {
             </div>
 
             <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4 cinematic-reveal">
-              <a
-                href={`https://wa.me/${wa}?text=${encodeURIComponent(
-                  'Hello Shree Bhargava Infrastructure & Development, I would like to discuss a project.'
-                )}`}
-                target="_blank"
-                rel="noreferrer"
-                className="bg-[#ffa500] text-[#121822] font-bold px-9 py-5 text-[10px] tracking-[.2em] uppercase hover:bg-[#121822] hover:text-white hover:scale-105 transition-all duration-500 shadow-lg text-center"
-              >
-                Start on WhatsApp ↗
-              </a>
+              {wa && (
+                <a
+                  href={getWaLink('Hello Shree Bhargava Infrastructure & Development, I would like to discuss a project.')}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#ffa500] text-[#121822] font-bold px-9 py-5 text-[10px] tracking-[.2em] uppercase hover:bg-[#121822] hover:text-white hover:scale-105 transition-all duration-500 shadow-lg text-center"
+                >
+                  Start on WhatsApp ↗
+                </a>
+              )}
               <a
                 href="mailto:hello@shreebhargava.com?subject=Project%20Enquiry"
-                className="border border-[#121822] bg-white text-[#121822] font-bold px-9 py-5 text-[10px] tracking-[.2em] uppercase hover:bg-[#121822] hover:text-white hover:scale-105 transition-all duration-500 text-center"
+                className="bg-[#121822] text-white font-bold px-9 py-5 text-[10px] tracking-[.2em] uppercase hover:bg-[#ffa500] hover:text-[#121822] hover:scale-105 transition-all duration-500 shadow-lg text-center"
               >
                 Email our studio ↗
               </a>
@@ -1456,14 +1460,16 @@ export default async function Home() {
           </div>
         </footer>
 
-        <a
-          className="whatsapp fixed bottom-5 right-5 z-40 rounded-full bg-[#121822] border border-[#ffa500] text-white px-5 py-4 text-[10px] font-bold tracking-widest uppercase hover:scale-110 hover:bg-[#ffa500] hover:text-[#121822] transition-all duration-300"
-          href={`https://wa.me/${wa}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          WhatsApp ↗
-        </a>
+        {wa && (
+          <a
+            className="whatsapp fixed bottom-5 right-5 z-40 rounded-full bg-[#121822] border border-[#ffa500] text-white px-5 py-4 text-[10px] font-bold tracking-widest uppercase hover:scale-110 hover:bg-[#ffa500] hover:text-[#121822] transition-all duration-300"
+            href={getWaLink()}
+            target="_blank"
+            rel="noreferrer"
+          >
+            WhatsApp ↗
+          </a>
+        )}
       </main>
     </CinematicMotion>
   );
